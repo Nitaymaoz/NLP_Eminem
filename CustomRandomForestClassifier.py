@@ -23,13 +23,24 @@ class CustomRandomForestClassifier:
 
         data = pd.concat([first_period_df, second_period_df])
 
-        def clean_lyrics(lyrics):
-            lyrics = re.sub(r'\[.*?\]', '', lyrics)  # Remove text in brackets
-            lyrics = re.sub(r'\s+', ' ', lyrics)  # Replace multiple spaces with a single space
-            lyrics = re.sub(r'[^\w\s]', '', lyrics)  # Remove punctuation
-            return lyrics.lower()  # Convert to lowercase
+        def clean_lyrics(lyrics, index):
+            try:
+                if isinstance(lyrics, str):
+                    lyrics = re.sub(r'\[.*?\]', '', lyrics)  # Remove text in brackets
+                    lyrics = re.sub(r'\s+', ' ', lyrics)  # Replace multiple spaces with a single space
+                    lyrics = re.sub(r'[^\w\s]', '', lyrics)  # Remove punctuation
+                    return lyrics.lower()  # Convert to lowercase
+                else:
+                    # Log the row with empty lyrics
+                    print(f"Empty or invalid lyrics at row {index}. Skipping this row.")
+                    return ''  # Return an empty string for non-string inputs (e.g., NaN values)
+            except Exception as e:
+                # Catch and log any exceptions that occur during processing
+                print(f"Error processing lyrics at row {index}: {lyrics}")
+                print(f"Exception: {str(e)}")
+                return ''  # Return an empty string to ensure the process continues
 
-        data['Cleaned_Lyrics'] = data['Lyrics'].apply(clean_lyrics)
+        data['Cleaned_Lyrics'] = data.apply(lambda row: clean_lyrics(row['Lyrics'], row.name), axis=1)
         self.data = data
 
     def vectorize_text(self, max_features):
@@ -62,3 +73,9 @@ class CustomRandomForestClassifier:
     def save_model(self, model_path, vectorizer_path):
         joblib.dump(self.model, model_path)
         joblib.dump(self.vectorizer, vectorizer_path)
+
+
+#Cross-Validation
+#Cross-validation is a technique to evaluate the model’s performance more robustly by splitting
+# the dataset into multiple folds and training/testing multiple times.
+# This way, you ensure that every instance in the dataset has a chance of being in the test set.
