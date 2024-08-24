@@ -36,7 +36,7 @@ class Main:
 
         for text in test_texts:
             print(f"Text: {text}")
-            print(f"Predicted as curse word: {self.model_trainer.predict_curse_words(text, word2vec_model)}")
+            print(f"Predicted as curse word: {self.model_trainer.predict_curse_words(text)}")
             print(f"Predicted as slang word: {self.model_trainer.predict_slang_words(text)}")
             print(f"Predicted as name: {self.model_trainer.predict_names(text)}")
             print("-" * 50)

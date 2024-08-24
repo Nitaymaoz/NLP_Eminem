@@ -52,8 +52,9 @@ class ModelTrainer:
         model.fit(X_train, y_train)
         return model
 
-    def predict_curse_words(self, text, word2vec_model):
-        return self.predict_words(text, self.curse_word_model, word2vec_model)
+    def predict_curse_words(self, text):
+        curse_words = [word for word in text.split() if word.lower() in Helper.CURSE_WORDS]
+        return dict(Counter(curse_words))
 
     def predict_slang_words(self, text):
         words = text.split()
