@@ -15,6 +15,11 @@ class Main:
     def run(self):
         # Known CSV files
         file_names = Helper.FILE_NAMES
+        all_lyrics = []
+
+        for file_name in file_names:
+            lyrics_df = Helper.load_lyrics_from_file(file_name)
+            all_lyrics.extend(lyrics_df['Lyrics'].tolist())
 
         # Training data for the models
         curse_words = list(Helper.CURSE_WORDS)
@@ -22,7 +27,19 @@ class Main:
         names = list(Helper.Names)
 
         # Train models
-        self.model_trainer.train_models(curse_words, slang_words, names)
+        self.model_trainer.train_models(curse_words, slang_words, names, all_lyrics)
+
+        test_texts = ["fuck the system", "murderin these beats", "Eminem is the best", "shit happens"]
+
+        # Train the Word2Vec model on all lyrics first
+        word2vec_model = self.model_trainer.train_word2vec_model(all_lyrics)
+
+        for text in test_texts:
+            print(f"Text: {text}")
+            print(f"Predicted as curse word: {self.model_trainer.predict_curse_words(text, word2vec_model)}")
+            print(f"Predicted as slang word: {self.model_trainer.predict_slang_words(text)}")
+            print(f"Predicted as name: {self.model_trainer.predict_names(text)}")
+            print("-" * 50)
 
         song_analysis_results = []
 
@@ -36,7 +53,7 @@ class Main:
                 album_name = row['Album']
 
                 print(f"Analyzing song: {song_title} in album: {album_name}")
-                song_analysis = self.album_analyzer.analyze_song(lyrics)
+                song_analysis = self.album_analyzer.analyze_song(lyrics, all_lyrics)
                 song_analysis_results.append({
                     "Album": album_name,
                     "Song Title": song_title,

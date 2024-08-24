@@ -25,11 +25,12 @@ class SongsAnalyze:
         self.real_words = set(nltk.corpus.words.words())
         self.model_trainer = ModelTrainer()  # Initialize ModelTrainer
 
-    def analyze_song(self, song):
+    def analyze_song(self, song, all_lyrics):
         """
         Analyzes a single song and returns the analysis results.
         """
         song = Helper.preprocess_lyrics(song)  # Preprocess the lyrics
+        word2vec_model = self.model_trainer.train_word2vec_model(all_lyrics)  # Get the trained Word2Vec model
         analysis_results = {
             "word_frequency": self.get_word_frequency(song),
             "named_entities": self.get_named_entities(song),
@@ -38,9 +39,9 @@ class SongsAnalyze:
             "non_real_words_freq": self.get_non_real_words_frequency(song),
             "curse_words_freq": self.get_curse_words_frequency(song),
             "sentiment_analysis": self.get_sentiment_analysis(song),  # Sentiment analysis of the song
-            "predicted_curse_words": self.get_predicted_curse_words(song),  # Predicted curse words
-            "predicted_slang_words": self.get_predicted_slang_words(song),  # Predicted slang words
-            "predicted_names": self.get_predicted_names(song)  # Predicted names
+            "predicted_curse_words": self.model_trainer.predict_curse_words(song, word2vec_model),  # Predicted curse words
+            "predicted_slang_words": self.model_trainer.predict_slang_words(song),  # Predicted slang words
+            "predicted_names": self.model_trainer.predict_names(song)  # Predicted names
         }
         return analysis_results
 
@@ -117,21 +118,24 @@ class SongsAnalyze:
 
     def get_predicted_curse_words(self, text):
         """
-        Uses the trained model to predict curse words in the text.
+        Identifies curse words based on a predefined list in the Helper class.
         """
-        return self.model_trainer.predict_curse_words(text)
+        words = [word for word in text.split() if word.lower() in Helper.CURSE_WORDS]
+        return dict(Counter(words))
 
     def get_predicted_slang_words(self, text):
         """
         Uses the trained model to predict slang words in the text.
         """
-        return self.model_trainer.predict_slang_words(text)
+        predictions = [word for word in text.split() if self.model_trainer.predict_slang_words(word) == 1]
+        return dict(Counter(predictions))
 
     def get_predicted_names(self, text):
         """
         Uses the trained model to predict names in the text.
         """
-        return self.model_trainer.predict_names(text)
+        predictions = [word for word in text.split() if self.model_trainer.predict_names(word) == 1]
+        return dict(Counter(predictions))
 
 
 def load_lyrics_from_file(file_path):
