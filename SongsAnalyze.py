@@ -25,6 +25,9 @@ class SongsAnalyze:
         self.real_words = set(nltk.corpus.words.words())
         self.model_trainer = ModelTrainer()  # Initialize ModelTrainer
 
+        self.albums_names = Helper.albums_names
+        self.songs_names = Helper.songs_names
+
     def analyze_song(self, song, all_lyrics):
         """
         Analyzes a single song and returns the analysis results.
@@ -41,8 +44,18 @@ class SongsAnalyze:
             "sentiment_analysis": self.get_sentiment_analysis(song),  # Sentiment analysis of the song
             "predicted_curse_words": self.model_trainer.predict_curse_words(song),  # Predicted curse words
             "predicted_slang_words": self.model_trainer.predict_slang_words(song),  # Predicted slang words
-            "predicted_names": self.model_trainer.predict_names(song)  # Predicted names
+            "predicted_names": self.model_trainer.predict_names(song),  # Predicted names
+            "found_albums_names_refs": self.find_albums_names_in_lyrics(song),  # Found titles and albums
+            "found_songs_names_refs": self.find_songs_names_in_lyrics(song)  # Found titles and albums
+
         }
+        # Adding the sums for curse words, slangs, and names
+        analysis_results['total_curse_words'] = sum(analysis_results['predicted_curse_words'].values())
+        analysis_results['total_slangs'] = sum(analysis_results['predicted_slang_words'].values())
+        analysis_results['total_names'] = sum(analysis_results['predicted_names'].values())
+        analysis_results['total_words'] = sum(analysis_results['word_frequency'].values())
+        # Count the number of unique words by taking the length of the keys in the word_frequency dictionary
+        analysis_results['total_unique_words'] = len(analysis_results['word_frequency'].keys())
         return analysis_results
 
     def get_word_frequency(self, text):
@@ -137,6 +150,15 @@ class SongsAnalyze:
         predictions = [word for word in text.split() if self.model_trainer.predict_names(word) == 1]
         return dict(Counter(predictions))
 
+    def find_albums_names_in_lyrics(self, lyrics):
+        """Searches for song titles and album names within the lyrics."""
+        found_albums = {album for album in self.albums_names if album.lower() in lyrics.lower()}
+        return found_albums
+
+    def find_songs_names_in_lyrics(self, lyrics):
+        """Searches for song titles and album names within the lyrics."""
+        found_songs = {song for song in self.songs_names if song.lower() in lyrics.lower()}
+        return found_songs
 
 def load_lyrics_from_file(file_path):
     """

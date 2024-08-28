@@ -5,13 +5,16 @@ import pandas as pd
 class Helper:
     # Constants
     FILE_NAMES = ['./DB/LyricsFirstPeriod.csv', './DB/LyricsSecondPeriod.csv']
-    My_CURSE_WORDS = {'fuck', 'shit', 'bitch', 'ass', 'damn', 'bastard', 'hell', 'dick', 'piss', 'crap', 'prick', 'cock',
-                   'pussy', 'slut', 'douche', 'cunt', 'motherfucker', 'fucking', 'ballsack', 'nuts', 'pussy', 'gay',
-                   'fat', 'shot', 'gun', 'shoot', 'Glock', 'puke', 'faggot', 'bullets', 'murderin', 'roaches',
-                   'midgets',
-                   'retard', 'retarded', 'suck', 'vomit', 'suck', 'groin', 'alcohol', 'alcoholic', 'hit', 'influence',
-                   'fat', 'motherfuckin', 'stealing', 'stealin', 'smoke', 'knives', 'killin', 'killing', 'screw', 'ass',
-                   'kicked', 'drugs', 'drug'}
+    My_CURSE_WORDS = {'fuck', 'shit', 'bitch', 'ass', 'damn', 'bastard', 'hell', 'dick', 'piss', 'crap', 'prick',
+                      'cock',
+                      'pussy', 'slut', 'douche', 'cunt', 'motherfucker', 'fucking', 'ballsack', 'nuts', 'pussy', 'gay',
+                      'fat', 'shot', 'gun', 'shoot', 'Glock', 'puke', 'faggot', 'bullets', 'murderin', 'roaches',
+                      'midgets',
+                      'retard', 'retarded', 'suck', 'vomit', 'suck', 'groin', 'alcohol', 'alcoholic', 'hit',
+                      'influence',
+                      'fat', 'motherfuckin', 'stealing', 'stealin', 'smoke', 'knives', 'killin', 'killing', 'screw',
+                      'ass',
+                      'kicked', 'drugs', 'drug'}
     Slang = {'murderin', 'servin', 'mcs', 'tryin', 'brainiac', 'relaxin', 'motherfuckin', 'rhymin', 'slimin',
              'starin', 'gamblin', 'goin', 'steppin', 'slammin', 'droppin', 'stealin', 'usin', 'nigga',
              'niggas', 'jackin', 'knives', 'steamin', 'slicin', 'killin', 'gangsta', 'cancelin',
@@ -456,7 +459,7 @@ class Helper:
     # Convert each element to lowercase
     Curse_words_DataSet = {word.lower() for word in Curse_words_DataSet}
     # Preform Union
-    CURSE_WORDS = Curse_words_DataSet|My_CURSE_WORDS
+    CURSE_WORDS = Curse_words_DataSet | My_CURSE_WORDS
 
     @staticmethod
     def preprocess_lyrics(lyrics):
@@ -474,3 +477,320 @@ class Helper:
         df = pd.read_csv(file_path, encoding='utf-8-sig')
         df['Lyrics'] = df['Lyrics'].apply(Helper.preprocess_lyrics)
         return df
+
+    Singles = [
+        "Demon Inside",
+        "Till Hell Freezes Over",
+        "Any Man",
+        "Bad Influence",
+        "Our House",
+        "Fuck You",
+        "Quitter",
+        "I Remember",
+        "8 Mile",
+        "Bump Heads",
+        "Wanksta",
+        "Nail In The Coffin",
+        "The Sauce",
+        "Hail Mary",
+        "Foolish Pride"
+    ]
+
+    SoulIntent = [
+        "Fattest Skinny Kid Alive",
+        "Steppin’ On To The Scene",
+        "Don’t Chew With Your Mouth Full",
+        "Unreallistically Graphic"
+    ]
+
+    BadMeetsEvil = [
+        "Nuttin’ To Do",
+        "Scary Movies"
+    ]
+
+    D12 = [
+        "Chance to Advance",
+        "Desperados",
+        "Filthy"
+    ]
+
+    SlimShadyEP = [
+        "Murder, Murder",
+        "If I Had",
+        "Low Down, Dirty",
+        "Just the Two of Us",
+        "No One’s Iller"
+    ]
+
+    Infinite = [
+        "Infinite",
+        "It’s O.K.",
+        "Tonite",
+        "313",
+        "Maxine",
+        "Open Mic",
+        "Never 2 Far",
+        "Searchin",
+        "Backstabber",
+        "Jealousy Woes II"
+    ]
+
+    theSlimShadyLP = [
+        "My Name Is",
+        "Guilty Conscience",
+        "Brain Damage",
+        "If I Had",
+        "'97 Bonnie & Clyde",
+        "Role Model",
+        "My Fault",
+        "Cum on Everybody",
+        "Rock Bottom",
+        "Just Don’t Give a Fuck",
+        "As the World Turns",
+        "I’m Shady",
+        "Bad Meets Evil",
+        "Still Don’t Give a Fuck"
+    ]
+
+    TheMarshallMathersLP = [
+        "Kill You",
+        "Stan",
+        "Who Knew",
+        "The Way I Am",
+        "The Real Slim Shady",
+        "Remember Me?",
+        "I’m Back",
+        "Marshall Mathers",
+        "Drug Ballad",
+        "Amityville",
+        "Bitch Please II",
+        "Kim",
+        "Under the Influence",
+        "Criminal",
+        "The Kids"
+    ]
+
+    TheEminemShow = [
+        "White America",
+        "Business",
+        "Cleanin' Out My Closet",
+        "Square Dance",
+        "Soldier",
+        "Say Goodbye Hollywood",
+        "Drips",
+        "Without Me",
+        "Sing for the Moment",
+        "Superman",
+        "Hailie's Song",
+        "When the Music Stops",
+        "Say What You Say",
+        "Till I Collapse",
+        "My Dad's Gone Crazy"
+    ]
+
+    Encore = [
+        "Evil Deeds",
+        "Never Enough",
+        "Yellow Brick Road",
+        "Like Toy Soldiers",
+        "Mosh",
+        "Puke",
+        "My 1st Single",
+        "Rain Man",
+        "Big Weenie",
+        "Just Lose It",
+        "Ass Like That",
+        "Spend Some Time",
+        "Mockingbird",
+        "Crazy in Love",
+        "One Shot 2 Shot",
+        "Encore / Curtains Down",
+        "We As Americans",
+        "Love You More",
+        "Ricky Ticky Toc"
+    ]
+
+    Relapse = [
+        "3 a.m.",
+        "My Mom",
+        "Insane",
+        "Bagpipes From Baghdad",
+        "Hello",
+        "Same Song & Dance",
+        "We Made You",
+        "Medicine Ball",
+        "Stay Wide Awake",
+        "Old Time's Sake",
+        "Must Be the Ganja",
+        "Déjà Vu",
+        "Beautiful",
+        "Crack a Bottle",
+        "Underground",
+        "My Darling",
+        "Careful What You Wish For"
+    ]
+
+    Recovery = [
+        "Cold Wind Blows",
+        "Talkin' 2 Myself",
+        "On Fire",
+        "Won't Back Down",
+        "W.T.P.",
+        "Going Through Changes",
+        "Not Afraid",
+        "Seduction",
+        "No Love",
+        "Space Bound",
+        "Cinderella Man",
+        "25 to Life",
+        "So Bad",
+        "Almost Famous",
+        "Love the Way You Lie",
+        "You're Never Over",
+        "Untitled",
+        "Ridaz",
+        "Session One"
+    ]
+
+    TheMarshallMathersLP2 = [
+        "Bad Guy",
+        "Rhyme or Reason",
+        "So Much Better",
+        "Survival",
+        "Legacy",
+        "Asshole",
+        "Berzerk",
+        "Rap God",
+        "Brainless",
+        "Stronger Than I Was",
+        "The Monster",
+        "So Far...",
+        "Love Game",
+        "Headlights",
+        "Evil Twin"
+    ]
+
+    Revival = [
+        "Walk on Water",
+        "Believe",
+        "Chloraseptic",
+        "Untouchable",
+        "River",
+        "Remind Me",
+        "Like Home",
+        "Bad Husband",
+        "Tragic Endings",
+        "Framed",
+        "Nowhere Fast",
+        "Heat",
+        "Offended",
+        "Need Me",
+        "In Your Head",
+        "Castle",
+        "Arose"
+    ]
+
+    Kamikaze = [
+        "The Ringer",
+        "Greatest",
+        "Lucky You",
+        "Normal",
+        "Stepping Stone",
+        "Not Alike",
+        "Kamikaze",
+        "Fall",
+        "Nice Guy",
+        "Good Guy",
+        "Venom"
+    ]
+
+    MusicToBeMurderedBy = [
+        "Black Magic",
+        "Alfred’s Theme",
+        "Tone Deaf",
+        "Book of Rhymes",
+        "Favorite Bitch",
+        "Guns Blazing",
+        "Gnat",
+        "Higher",
+        "These Demons",
+        "She Loves Me",
+        "Killer",
+        "Zeus",
+        "Discombobulated",
+        "Premonition",
+        "Unaccommodating",
+        "You Gon' Learn",
+        "Those Kinda Nights",
+        "In Too Deep",
+        "Godzilla",
+        "Darkness",
+        "Leaving Heaven",
+        "Yah Yah",
+        "Stepdad",
+        "Marsh",
+        "Never Love Again",
+        "Little Engine",
+        "Lock It Up",
+        "Farewell",
+        "No Regrets",
+        "I Will"
+    ]
+
+    TheDeathOfSlimShady = [
+        "Renaissance",
+        "Habits",
+        "Trouble",
+        "Brand New Dance",
+        "Evil",
+        "Lucifer",
+        "Antichrist",
+        "Fuel",
+        "Road Rage",
+        "Houdini",
+        "Guilty Conscience 2",
+        "Head Honcho",
+        "Temporary",
+        "Bad One",
+        "Tobey",
+        "Somebody Save Me"
+    ]
+
+    StraightFromTheLab = [
+        "Monkey See, Monkey Do",
+        "We As Americans",
+        "Love You More",
+        "Can I Bitch",
+        "Bully",
+        "6 in the Morning by D12",
+        "Doe Rae Me",
+        "The Kids",
+        "Stimulate",
+        "Rabbit Run",
+        "The Conspiracy Freestyle",
+        "Bump Heads",
+        "God Is Cleaning Out My Closet"
+    ]
+
+    firstPeriodAlbums = [Infinite, theSlimShadyLP, TheMarshallMathersLP, TheEminemShow, StraightFromTheLab, Encore,
+                         Singles, SoulIntent, BadMeetsEvil, D12, SlimShadyEP]
+
+    firstAlbumNames = ["Infinite", "The Slim Shady LP", "The Marshall Mathers LP", "The Eminem Show",
+                       "Straight From The Lab", "Encore", "Singles", "Soul Intent", "Bad Meets Evil", "D12",
+                       "Slim Shady EP"]
+
+    secondPeriodAlbums = [Relapse, Recovery, TheMarshallMathersLP2, Revival, Kamikaze, MusicToBeMurderedBy,
+                          TheDeathOfSlimShady]
+
+    secondAlbumNames = ["Relapse", "Recovery", "The Marshall Mathers LP 2", "Revival", "Kamikaze",
+                        "Music To Be Murdered By", "The Death Of Slim Shady"]
+
+    songs_first_period = set(Singles + SoulIntent + BadMeetsEvil + D12 + SlimShadyEP + Infinite + theSlimShadyLP +
+                                 TheMarshallMathersLP + TheEminemShow + Encore + StraightFromTheLab)
+
+    songs_second_period = set(Relapse + Recovery + TheMarshallMathersLP2 +
+                                  Revival + Kamikaze + MusicToBeMurderedBy + TheDeathOfSlimShady)
+
+    songs_names=set(songs_first_period + songs_second_period)
+
+    albums_names = set(firstAlbumNames + secondAlbumNames)
