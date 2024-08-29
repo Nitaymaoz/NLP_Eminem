@@ -786,11 +786,11 @@ class Helper:
                         "Music To Be Murdered By", "The Death Of Slim Shady"]
 
     songs_first_period = set(Singles + SoulIntent + BadMeetsEvil + D12 + SlimShadyEP + Infinite + theSlimShadyLP +
-                                 TheMarshallMathersLP + TheEminemShow + Encore + StraightFromTheLab)
+                             TheMarshallMathersLP + TheEminemShow + Encore + StraightFromTheLab)
 
     songs_second_period = set(Relapse + Recovery + TheMarshallMathersLP2 +
-                                  Revival + Kamikaze + MusicToBeMurderedBy + TheDeathOfSlimShady)
+                              Revival + Kamikaze + MusicToBeMurderedBy + TheDeathOfSlimShady)
 
-    songs_names=set(songs_first_period + songs_second_period)
+    songs_names = songs_first_period | songs_second_period   # the | operator works here for union
 
     albums_names = set(firstAlbumNames + secondAlbumNames)

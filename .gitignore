@@ -1,2 +1,4 @@
 .venv
 song_analysis.csv
+song_analysis_first_period.csv
+song_analysis_second_period.csv
