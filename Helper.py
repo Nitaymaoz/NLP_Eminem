@@ -740,7 +740,6 @@ class Helper:
     TheDeathOfSlimShady = [
         "Renaissance",
         "Habits",
-        "Trouble",
         "Brand New Dance",
         "Evil",
         "Lucifer",
