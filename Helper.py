@@ -5,6 +5,9 @@ import pandas as pd
 class Helper:
     # Constants
     FILE_NAMES = ['./DB/LyricsFirstPeriod.csv', './DB/LyricsSecondPeriod.csv']
+    period_Analysis_Filenames = ['./results/song_analysis_first_period.csv',
+                                 './results/song_analysis_second_period.csv']
+
     My_CURSE_WORDS = {'fuck', 'shit', 'bitch', 'ass', 'damn', 'bastard', 'hell', 'dick', 'piss', 'crap', 'prick',
                       'cock',
                       'pussy', 'slut', 'douche', 'cunt', 'motherfucker', 'fucking', 'ballsack', 'nuts', 'pussy', 'gay',
@@ -790,6 +793,10 @@ class Helper:
     songs_second_period = set(Relapse + Recovery + TheMarshallMathersLP2 +
                               Revival + Kamikaze + MusicToBeMurderedBy + TheDeathOfSlimShady)
 
-    songs_names = songs_first_period | songs_second_period   # the | operator works here for union
+    songs_names = songs_first_period | songs_second_period  # the | operator works here for union
 
     albums_names = set(firstAlbumNames + secondAlbumNames)
+
+    # CSVAnalyzer
+    analysis_file_paths = ['./results/song_analysis_first_period.csv', './results/song_analysis_second_period.csv']
+    summary_filenames = ['./results/summary_first_period.csv', './results/summary_second_period.csv']

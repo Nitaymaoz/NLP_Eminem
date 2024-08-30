@@ -1,11 +1,12 @@
 import pandas as pd
 from collections import Counter
+from Helper import Helper
 import numpy as np
 
 class CSVAnalyzer:
-    def __init__(self, file_paths, output_filenames):
+    def __init__(self, file_paths, summary_filenames):
         self.file_paths = file_paths
-        self.output_filenames = output_filenames
+        self.summary_filenames = summary_filenames
 
     def load_data(self, file_path):
         return pd.read_csv(file_path)
@@ -14,18 +15,29 @@ class CSVAnalyzer:
         for i, file_path in enumerate(self.file_paths):
             print(f"Processing file: {file_path}")
             df = self.load_data(file_path)
-            processed_results = self.analyze_dataframe(df)
-            self.save_to_csv(processed_results, self.output_filenames[i])
 
-    def analyze_dataframe(self, df):
-        results = {}
+            # Group by album and process each album individually
+            grouped = df.groupby('Album')
+            all_album_results = []
 
-        # Average and Mean for specified columns
+            for album, album_df in grouped:
+                print(f"Analyzing Album: {album}")
+                processed_results = self.analyze_album(album, album_df)
+                all_album_results.append(processed_results)
+
+            # Convert the list of dictionaries to a DataFrame and save to CSV
+            final_df = pd.DataFrame(all_album_results)
+            self.save_to_csv(final_df, self.summary_filenames[i])
+
+    def analyze_album(self, album, album_df):
+        results = {'Album': album}
+
+        # Average and Median for specified columns
         columns_to_average = ['total_unique_words', 'total_words', 'total_names',
                               'total_slangs', 'total_curse_words']
         for col in columns_to_average:
-            results[f'avg_{col}'] = df[col].mean()
-            results[f'median_{col}'] = df[col].median()
+            results[f'avg_{col}'] = album_df[col].mean()
+            results[f'median_{col}'] = album_df[col].median()
 
         # Summing and Counting for specified columns
         columns_to_sum = ['predicted_curse_words', 'predicted_slang_words',
@@ -33,20 +45,20 @@ class CSVAnalyzer:
 
         for col in columns_to_sum:
             summed_col = Counter()
-            for entry in df[col]:
+            for entry in album_df[col]:
                 summed_col.update(eval(entry))  # Using eval to convert string to dict
             results[f'summed_{col}'] = dict(summed_col)
 
         # Found album and song name references
-        results['found_albums_names_refs'] = self.find_references(df, 'found_albums_names_refs')
-        results['found_songs_names_refs'] = self.find_references(df, 'found_songs_names_refs')
+        results['found_albums_names_refs'] = self.find_references(album_df, 'found_albums_names_refs')
+        results['found_songs_names_refs'] = self.find_references(album_df, 'found_songs_names_refs')
 
         # Sentiment analysis
-        sentiment = self.calculate_average_sentiment(df)
+        sentiment = self.calculate_average_sentiment(album_df)
         results.update(sentiment)
 
         # Named entities average
-        named_entities_avg = self.calculate_average_named_entities(df)
+        named_entities_avg = self.calculate_average_named_entities(album_df)
         results['average_named_entities'] = named_entities_avg
 
         return results
@@ -84,14 +96,13 @@ class CSVAnalyzer:
 
         return dict(entity_counter)
 
-    def save_to_csv(self, data, filename):
-        df = pd.DataFrame([data])
+    def save_to_csv(self, df, filename):
         df.to_csv(filename, index=False, encoding='utf-8-sig')
 
 
 if __name__ == "__main__":
-    file_paths = ['song_analysis_first_period.csv', 'song_analysis_second_period.csv']
-    output_filenames = ['summary_first_period.csv', 'summary_second_period.csv']
+    file_paths = Helper.analysis_file_paths
+    summary_filenames = Helper.summary_filenames
 
-    analyzer = CSVAnalyzer(file_paths, output_filenames)
+    analyzer = CSVAnalyzer(file_paths, summary_filenames)
     analyzer.process_files()

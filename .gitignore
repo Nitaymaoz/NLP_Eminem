@@ -1,6 +1,6 @@
 .venv
-song_analysis.csv
-song_analysis_first_period.csv
-song_analysis_second_period.csv
-summary_first_period.csv
-summary_second_period.csv
+results/song_analysis.csv
+results/song_analysis_first_period.csv
+results/song_analysis_second_period.csv
+results/summary_first_period.csv
+results/summary_second_period.csv
