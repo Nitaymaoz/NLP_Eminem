@@ -33,7 +33,11 @@ class SongsAnalyze:
         Analyzes a single song and returns the analysis results.
         """
         song = Helper.preprocess_lyrics(song)  # Preprocess the lyrics
-        word2vec_model = self.model_trainer.train_word2vec_model(all_lyrics)  # Get the trained Word2Vec model
+        # word2vec_model = self.model_trainer.train_word2vec_model(all_lyrics)  # Get the trained Word2Vec model
+
+        # Analyze song structure
+        structure_analysis = self.analyze_song_structure(song)
+
         analysis_results = {
             "word_frequency": self.get_word_frequency(song),
             "named_entities": self.get_named_entities(song),
@@ -58,8 +62,38 @@ class SongsAnalyze:
         analysis_results['total_words'] = sum(analysis_results['word_frequency'].values())
         # Count the number of unique words by taking the length of the keys in the word_frequency dictionary
         analysis_results['total_unique_words'] = len(analysis_results['word_frequency'].keys())
+
+
+        # Include song structure analysis in the final results
+        analysis_results.update(structure_analysis)
+
         return analysis_results
 
+    def analyze_song_structure(self, song):
+        # Split song into verses based on double line breaks
+        verses = song.split("\n\n")
+        num_verses = len(verses)
+
+        # Split into lines
+        lines = [line for verse in verses for line in verse.splitlines()]
+        num_lines = len(lines)
+
+        # Count characters
+        num_characters = len(song)
+
+        # Calculate average lengths
+        avg_verse_length = round(num_lines / num_verses, 2) if num_verses > 0 else 0
+        avg_line_length = round(sum(len(line.split()) for line in lines) / num_lines, 2) if num_lines > 0 else 0
+        avg_word_length = round(num_characters / sum(len(word) for line in lines for word in line.split()), 2) if num_characters > 0 else 0
+
+        return {
+            "num_verses": num_verses,
+            "num_lines": num_lines,
+            "num_characters": num_characters,
+            "avg_verse_length": avg_verse_length,
+            "avg_line_length": avg_line_length,
+            "avg_word_length": avg_word_length
+        }
     def get_word_frequency(self, text):
         """
         Calculates the frequency of each word in the text.

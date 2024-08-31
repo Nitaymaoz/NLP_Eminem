@@ -14,7 +14,7 @@ class Main:
         self.slang_words = list(Helper.Slang)
         self.names = list(Helper.Names)
         self.file_names = Helper.FILE_NAMES
-        self.period_filenames = ['song_analysis_first_period.csv', 'song_analysis_second_period.csv']
+        self.period_filenames = Helper.period_Analysis_Filenames
 
     def save_to_csv(self, data, filename):
         df = pd.DataFrame(data)

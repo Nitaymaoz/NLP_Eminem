@@ -36,8 +36,14 @@ class CSVAnalyzer:
         columns_to_average = ['total_unique_words', 'total_words', 'total_names',
                               'total_slangs', 'total_curse_words']
         for col in columns_to_average:
-            results[f'avg_{col}'] = album_df[col].mean()
-            results[f'median_{col}'] = album_df[col].median()
+            mean_value = album_df[col].mean()
+            std_value = album_df[col].std()
+            cv_value = (std_value / mean_value) * 100 if mean_value != 0 else 0
+
+            results[f'avg_{col}'] = round(mean_value, 2)
+            results[f'median_{col}'] = round(album_df[col].median(), 2)
+            results[f'std_{col}'] = round(std_value, 2)
+            results[f'cv_{col}'] = round(cv_value, 2)  # Adding CV to the results
 
         # Summing and Counting for specified columns
         columns_to_sum = ['predicted_curse_words', 'predicted_slang_words',
@@ -79,7 +85,7 @@ class CSVAnalyzer:
             sentiment_counter.update(sentiment_dict['negative_words'])
 
         for word in sentiment_counter:
-            sentiment_counter[word] /= len(sentiment_col)  # Averaging per word
+            sentiment_counter[word] = round(sentiment_counter[word]/len(sentiment_col), 2)  # Averaging per word
 
         return {'average_sentiment': dict(sentiment_counter)}
 
@@ -92,7 +98,7 @@ class CSVAnalyzer:
             entity_counter.update(entities_dict)
 
         for entity in entity_counter:
-            entity_counter[entity] /= len(named_entities_col)  # Averaging per entity
+            entity_counter[entity] /= round(len(named_entities_col), 2)  # Averaging per entity, round to 2 points after decimal point
 
         return dict(entity_counter)
 
