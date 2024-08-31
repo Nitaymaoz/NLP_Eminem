@@ -3,6 +3,7 @@ from collections import Counter
 from Helper import Helper
 import numpy as np
 
+
 class CSVAnalyzer:
     def __init__(self, file_paths, album_summary_filenames, period_summary_filenames):
         self.file_paths = file_paths
@@ -39,9 +40,7 @@ class CSVAnalyzer:
             # Add the processed album results to the period summary
             period_results.append(self.analyze_period(final_df))
 
-
-
-         # Save the period-level summaries
+        # Save the period-level summaries
         for i, period_result in enumerate(period_results):
             self.save_to_csv(pd.DataFrame([period_result]), self.period_summary_filenames[i])
 
@@ -50,7 +49,9 @@ class CSVAnalyzer:
 
         # Average and Median for specified columns
         columns_to_average = ['total_unique_words', 'total_words', 'total_names',
-                              'total_slangs', 'total_curse_words']
+                              'total_slangs', 'total_curse_words',
+                              'num_verses', 'num_lines', 'num_characters',
+                              'avg_verse_length', 'avg_line_length', 'avg_word_length']
         for col in columns_to_average:
             mean_value = album_df[col].mean()
             std_value = album_df[col].std()
@@ -77,7 +78,7 @@ class CSVAnalyzer:
 
         # Sentiment analysis
         sentiment = self.calculate_sentiment(album_df)
-        results.update({'total_sentiment':sentiment})
+        results.update({'total_sentiment': sentiment})
 
         # Named entities average
         named_entities_avg = self.calculate_average_named_entities(album_df)
@@ -109,7 +110,10 @@ class CSVAnalyzer:
         results = {}
 
         # Average and Median for specified columns
-        columns_to_average = ['avg_total_unique_words', 'avg_total_words', 'avg_total_names', 'avg_total_slangs', 'avg_total_curse_words']
+        columns_to_average = ['avg_total_unique_words', 'avg_total_words', 'avg_total_names',
+                              'avg_total_slangs', 'avg_total_curse_words',
+                              'avg_num_verses', 'avg_num_lines', 'avg_num_characters',
+                              'avg_avg_verse_length', 'avg_avg_line_length', 'avg_avg_word_length']
 
         num_songs = len(df)
 
@@ -197,7 +201,8 @@ class CSVAnalyzer:
             entity_counter.update(entities_dict)
 
         for entity in entity_counter:
-            entity_counter[entity] /= round(len(named_entities_col), 2)  # Averaging per entity, round to 2 points after decimal point
+            entity_counter[entity] /= round(len(named_entities_col),
+                                            2)  # Averaging per entity, round to 2 points after decimal point
 
         return dict(entity_counter)
 
@@ -210,5 +215,5 @@ if __name__ == "__main__":
     album_summary_filenames = Helper.summary_filenames_by_album
     period_summary_filenames = Helper.summary_filenames_by_period
 
-    analyzer = CSVAnalyzer(file_paths, album_summary_filenames,period_summary_filenames)
+    analyzer = CSVAnalyzer(file_paths, album_summary_filenames, period_summary_filenames)
     analyzer.process_files()
