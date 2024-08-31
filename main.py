@@ -29,7 +29,7 @@ class Main:
             album_name = row['Album']
 
             print(f"Analyzing song: {song_title} in album: {album_name}")
-            song_analysis = self.album_analyzer.analyze_song(lyrics, all_lyrics)
+            song_analysis = self.album_analyzer.analyze_song(lyrics)
             song_analysis_results.append({
                 "Album": album_name,
                 "Song Title": song_title,

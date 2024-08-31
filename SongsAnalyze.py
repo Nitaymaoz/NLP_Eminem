@@ -29,12 +29,11 @@ class SongsAnalyze:
         self.albums_names = Helper.albums_names
         self.songs_names = Helper.songs_names
 
-    def analyze_song(self, song, all_lyrics):
+    def analyze_song(self, song):
         """
         Analyzes a single song and returns the analysis results.
         """
         song = Helper.preprocess_lyrics(song)  # Preprocess the lyrics
-        # word2vec_model = self.model_trainer.train_word2vec_model(all_lyrics)  # Get the trained Word2Vec model
 
         # Analyze song structure
         structure_analysis = self.analyze_song_structure(song)
@@ -47,7 +46,6 @@ class SongsAnalyze:
             "non_real_words_freq": self.get_non_real_words_frequency(song),
             "curse_words_freq": self.get_curse_words_frequency(song),
             "sentiment_analysis": self.get_sentiment_analysis(song),  # Sentiment analysis of the song
-            #ToDo - change the model trainer we are no longer training a model
             "predicted_curse_words": self.model_trainer.predict_curse_words(song),  # Predicted curse words
             "predicted_slang_words": self.model_trainer.predict_slang_words(song),  # Predicted slang words
             "predicted_names": self.model_trainer.predict_names(song),  # Predicted names
