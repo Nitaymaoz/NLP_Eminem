@@ -58,7 +58,8 @@ class SongsAnalyze:
         # Adding the sums for curse words, slangs, and names
         analysis_results['total_curse_words'] = sum(analysis_results['predicted_curse_words'].values())
         analysis_results['total_slangs'] = sum(analysis_results['predicted_slang_words'].values())
-        analysis_results['total_names'] = sum(analysis_results['predicted_names'].values())
+        
+        ['total_names'] = sum(analysis_results['predicted_names'].values())
         analysis_results['total_words'] = sum(analysis_results['word_frequency'].values())
         # Count the number of unique words by taking the length of the keys in the word_frequency dictionary
         analysis_results['total_unique_words'] = len(analysis_results['word_frequency'].keys())
