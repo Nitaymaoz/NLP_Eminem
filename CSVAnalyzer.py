@@ -123,7 +123,11 @@ class CSVAnalyzer:
             summed_col = Counter()
             for entry in df[col]:
                 summed_col.update(entry)  # Already a dict, no need to use eval
-            results[f'total_{col}'] = dict(summed_col)
+
+            # Keep only the top 30 entries based on frequency
+            top_30_summed_col = dict(summed_col.most_common(30))
+            results[f'total_{col}'] = top_30_summed_col
+
 
         return results
 
