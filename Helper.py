@@ -800,4 +800,4 @@ class Helper:
     # CSVAnalyzer
     analysis_file_paths = ['./results/song_analysis_first_period.csv', './results/song_analysis_second_period.csv']
     summary_filenames_by_album = ['./results/album_summary_first_period.csv', './results/album_summary_second_period.csv']
-    summary_filenames_by_period = ['./results/period_summary_first_period.csv', './results/period_summary_second_period.csv']
+    summary_filenames_by_period = ['./results/first_period_summary.csv', './results/second_period_summary.csv']

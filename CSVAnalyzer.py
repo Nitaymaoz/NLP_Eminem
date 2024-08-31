@@ -32,10 +32,16 @@ class CSVAnalyzer:
             final_df = pd.DataFrame(all_album_results)
             self.save_to_csv(final_df, self.album_summary_filenames[i])
 
+            #FOR DEBUGGING
+            #period_df = pd.DataFrame(final_df)
+            #print("Columns in period_df:", period_df.columns)  # Print the columns
+
             # Add the processed album results to the period summary
             period_results.append(self.analyze_period(final_df))
 
-            # Save the period-level summaries
+
+
+         # Save the period-level summaries
         for i, period_result in enumerate(period_results):
             self.save_to_csv(pd.DataFrame([period_result]), self.period_summary_filenames[i])
 
@@ -70,8 +76,8 @@ class CSVAnalyzer:
         results['found_songs_names_refs'] = self.find_references(album_df, 'found_songs_names_refs')
 
         # Sentiment analysis
-        sentiment = self.calculate_average_sentiment(album_df)
-        results.update(sentiment)
+        sentiment = self.calculate_sentiment(album_df)
+        results.update({'total_sentiment':sentiment})
 
         # Named entities average
         named_entities_avg = self.calculate_average_named_entities(album_df)
@@ -86,33 +92,37 @@ class CSVAnalyzer:
             all_references.update(references)
         return list(all_references)
 
-    def calculate_average_sentiment(self, df):
+    def calculate_sentiment(self, df):
         sentiment_col = df['sentiment_analysis']
-        sentiment_counter = Counter()
+        total_sentiment = 0
+        total_words = 0
 
-        for entry in sentiment_col:
-            sentiment_dict = eval(entry)
-            sentiment_counter.update(sentiment_dict['negative_words'])
+        for sentiment_value in sentiment_col:
+            total_sentiment += sentiment_value
+            total_words += 1
 
-        for word in sentiment_counter:
-            sentiment_counter[word] = round(sentiment_counter[word]/len(sentiment_col), 2)  # Averaging per word
+        overall_sentiment = round(total_sentiment / total_words, 2) if total_words > 0 else 0
 
-        return {'average_sentiment': dict(sentiment_counter)}
+        return {overall_sentiment}
 
     def analyze_period(self, df):
         results = {}
 
         # Average and Median for specified columns
-        columns_to_average = ['avg_total_unique_words', 'avg_total_words', 'avg_total_names',
-                              'avg_total_slangs', 'avg_total_curse_words']
-        for col in columns_to_average:
-            mean_value = df[col].mean()
-            std_value = df[col].std()
-            cv_value = (std_value / mean_value) * 100 if mean_value != 0 else 0
+        columns_to_average = ['avg_total_unique_words', 'avg_total_words', 'avg_total_names', 'avg_total_slangs', 'avg_total_curse_words']
 
-            results[f'avg_{col}'] = round(mean_value, 2)
+        num_songs = len(df)
+
+        for col in columns_to_average:
+            sum = df[col].sum()  # Sum all values across all songs
+            avg = sum / num_songs if num_songs > 0 else 0
+
+            std = df[col].std()  # Standard deviation across songs
+            cv_value = (std / avg) * 100 if avg != 0 else 0
+
+            results[f'{col}'] = round(avg, 2)
             results[f'median_{col}'] = round(df[col].median(), 2)
-            results[f'std_{col}'] = round(std_value, 2)
+            results[f'std_{col}'] = round(std, 2)
             results[f'cv_{col}'] = round(cv_value, 2)  # Adding CV to the results
 
         # Summing and Counting for specified columns
@@ -126,10 +136,57 @@ class CSVAnalyzer:
 
             # Keep only the top 30 entries based on frequency
             top_30_summed_col = dict(summed_col.most_common(30))
-            results[f'total_{col}'] = top_30_summed_col
+            results[f'{col}'] = top_30_summed_col
 
+        # Combine all references from albums and songs
+        results['found_albums_names_refs'] = self.combine_references(df, 'found_albums_names_refs')
+        results['found_songs_names_refs'] = self.combine_references(df, 'found_songs_names_refs')
+
+        # Aggregate sentiment analysis
+        period_sentiment = self.aggregate_sentiment(df)
+        results.update({'total_sentiment': period_sentiment})
+
+        # Aggregate named entities
+        period_named_entities = self.aggregate_named_entities(df)
+        results['average_named_entities'] = period_named_entities
 
         return results
+
+    def combine_references(self, df, column_name):
+        all_references = set()
+        for entry in df[column_name]:
+            all_references.update(entry)
+        return list(all_references)
+
+    def aggregate_sentiment(self, df):
+        #print("Columns in DataFrame:", df.columns)
+        sentiment_col = df['total_sentiment']
+        total_sentiment = 0
+        total_words = 0
+
+        for sentiment_value in sentiment_col:
+            sentiment_value = next(iter(sentiment_value))
+            total_sentiment += sentiment_value
+            total_words += 1
+
+        overall_sentiment = round(total_sentiment / total_words, 2) if total_words > 0 else 0
+
+        return {overall_sentiment}
+
+    def aggregate_named_entities(self, df):
+        named_entities_col = df['average_named_entities']
+        entity_counter = Counter()
+
+        for entry in named_entities_col:
+            entity_counter.update(entry)
+
+        total_entities = sum(entity_counter.values())
+        unique_entities = len(entity_counter)
+
+        return {
+            'total_named_entities': total_entities,
+            'unique_named_entities': unique_entities
+        }
 
     def calculate_average_named_entities(self, df):
         named_entities_col = df['named_entities']

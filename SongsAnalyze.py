@@ -11,6 +11,7 @@ import numpy as np
 import pandas as pd
 from Helper import Helper
 from ModelTrainer import ModelTrainer
+import string
 
 
 
@@ -78,13 +79,22 @@ class SongsAnalyze:
         lines = [line for verse in verses for line in verse.splitlines()]
         num_lines = len(lines)
 
-        # Count characters
-        num_characters = len(song)
+        # Remove spaces and punctuation and words that are shorter than length of 3 then count characters
+        words = [word for line in lines for word in line.split() if len(word) > 2]
+        cleaned_words = []
+        for word in words:
+            cleaned_word = word.translate(str.maketrans("", "", string.punctuation))
+            cleaned_words.append(cleaned_word)
+
+        cleaned_song = "".join(cleaned_words)
+        num_characters = len(cleaned_song)
+
+        total_words = sum(1 for line in lines for word in line.split() if len(word) > 2)
 
         # Calculate average lengths
         avg_verse_length = round(num_lines / num_verses, 2) if num_verses > 0 else 0
         avg_line_length = round(sum(len(line.split()) for line in lines) / num_lines, 2) if num_lines > 0 else 0
-        avg_word_length = round(num_characters / sum(len(word) for line in lines for word in line.split()), 2) if num_characters > 0 else 0
+        avg_word_length = round(num_characters / total_words, 2) if num_characters > 0 else 0
 
         return {
             "num_verses": num_verses,
@@ -151,19 +161,13 @@ class SongsAnalyze:
 
     def get_sentiment_analysis(self, text):
         """
-        Performs sentiment analysis on the text and returns the negative words and average number of negative words per sentence.
+        Performs sentiment analysis on the text and returns the overall sentiment polarity.
+        Sentiment polarity is a value between -1 (negative) and +1 (positive).
         """
         blob = TextBlob(text)
-        negative_words = []
-        for sentence in blob.sentences:
-            if sentence.sentiment.polarity < 0:
-                negative_words.extend([word for word in sentence.words if
-                                       word.lower() in self.real_words and word.lower() not in self.stop_words])
-        avg_negative_words_per_sentence = len(negative_words) / len(blob.sentences) if blob.sentences else 0
-        return {
-            "negative_words": dict(Counter(negative_words)),
-            "average_negative_words_per_sentence": avg_negative_words_per_sentence
-        }
+        # Calculate overall sentiment polarity
+        overall_polarity = blob.sentiment.polarity
+        return round(overall_polarity, 2)
 
     def get_predicted_curse_words(self, text):
         """
